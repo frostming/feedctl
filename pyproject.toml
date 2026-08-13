@@ -1,0 +1,19 @@
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project]
+name = "feedctl"
+version = "0.1.0"
+description = "A local-first RSS and Atom feed CLI with read-state tracking"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Frost"}]
+dependencies = ["rich>=13.9"]
+
+[project.scripts]
+feedctl = "feedctl.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
