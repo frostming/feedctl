@@ -79,7 +79,6 @@ feedctl read
 ## 开发与验证
 
 ```console
-uv sync
-python -m unittest discover -s tests -v
-python -m compileall -q src tests
+pdm sync
+pdm test
 ```

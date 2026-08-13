@@ -33,26 +33,25 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Set up uv and Python
-        uses: astral-sh/setup-uv@ae62891fec2bb8e7d6c99fc78c9fec3a63790f8d # v10.0.0
+      - name: Set up PDM and Python
+        uses: pdm-project/setup-pdm@94a823180e06fcde4ad29308721954a521c96ed0 # v4
         with:
-          version: "0.12.3"
           python-version: ${{ matrix.python-version }}
-          enable-cache: true
-          cache-dependency-glob: pyproject.toml
+          cache: true
+          cache-dependency-path: pyproject.toml
 
       - name: Install dependencies
-        run: uv sync
+        run: pdm install --frozen-lockfile
 
       - name: Smoke test the CLI
-        run: uv run feedctl --help
+        run: pdm run feedctl --help
 
       - name: Run tests
-        run: uv run python -m unittest discover -s tests -v
+        run: pdm run python -m unittest discover -s tests -v
 
       - name: Compile Python sources
-        run: uv run python -m compileall -q src tests
+        run: pdm run python -m compileall -q src tests
 
       - name: Build distributions
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.14'
-        run: uv build
+        run: pdm build

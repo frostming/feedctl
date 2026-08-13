@@ -17,3 +17,6 @@ feedctl = "feedctl.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.pdm.scripts]
+test = "python -m unittest discover -s tests -v"
