@@ -5,9 +5,12 @@ from collections.abc import Generator, Iterable
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Self
+from typing import TYPE_CHECKING
 
 from feedctl.models import ParsedFeed, UnreadArticle
+
+if TYPE_CHECKING:
+    from typing import Self
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;
