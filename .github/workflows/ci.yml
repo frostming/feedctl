@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python-version: "3.10"
+          - os: ubuntu-latest
+            python-version: "3.14"
+          - os: macos-latest
+            python-version: "3.14"
+          - os: windows-latest
+            python-version: "3.14"
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@ae62891fec2bb8e7d6c99fc78c9fec3a63790f8d # v10.0.0
+        with:
+          version: "0.12.3"
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-dependency-glob: pyproject.toml
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Smoke test the CLI
+        run: uv run feedctl --help
+
+      - name: Run tests
+        run: uv run python -m unittest discover -s tests -v
+
+      - name: Compile Python sources
+        run: uv run python -m compileall -q src tests
+
+      - name: Build distributions
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.14'
+        run: uv build
