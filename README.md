@@ -42,6 +42,8 @@ feedctl export > subscriptions.opml
 feedctl inbox
 ```
 
+默认表格显示发布日期、来源、标题和链接，不显示内部文章 ID。日期统一按 UTC 展示；源没有提供发布日期时显示 `—`。
+
 需要稳定的 agent/脚本输入时使用 JSON 格式；该模式的 stdout 始终是合法 JSON，包括没有未读文章的情况：
 
 ```console
@@ -56,7 +58,8 @@ feedctl inbox --format json
       "id": 12,
       "source": "Example Feed",
       "title": "Article title",
-      "url": "https://example.com/article"
+      "url": "https://example.com/article",
+      "published_at": "2026-08-12T10:00:00+00:00"
     }
   ]
 }

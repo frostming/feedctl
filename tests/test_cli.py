@@ -23,11 +23,13 @@ RSS = b"""<?xml version="1.0"?>
       <guid>article-1</guid>
       <title>First article</title>
       <link>https://example.com/first</link>
+      <pubDate>Wed, 12 Aug 2026 10:00:00 GMT</pubDate>
     </item>
     <item>
       <guid>article-2</guid>
       <title>Second article</title>
       <link>https://example.com/second</link>
+      <pubDate>Wed, 12 Aug 2026 11:00:00 GMT</pubDate>
     </item>
   </channel>
 </rss>
@@ -92,6 +94,13 @@ class CliTests(unittest.TestCase):
             article_ids = [article["id"] for article in inbox["articles"]]
             self.assertEqual(inbox["count"], 2)
             self.assertEqual(len(article_ids), 2)
+            self.assertEqual(
+                [article["published_at"] for article in inbox["articles"]],
+                [
+                    "2026-08-12T11:00:00+00:00",
+                    "2026-08-12T10:00:00+00:00",
+                ],
+            )
 
             repeated_stdout = io.StringIO()
             with (
@@ -197,6 +206,9 @@ class CliTests(unittest.TestCase):
         self.assertIn("Refreshing feeds", progress_output.getvalue())
         self.assertIn("Inbox · 2 unread", inbox_stdout.getvalue())
         self.assertIn("Example RSS", inbox_stdout.getvalue())
+        self.assertIn("Published (UTC)", inbox_stdout.getvalue())
+        self.assertIn("2026-08-12 11:00", inbox_stdout.getvalue())
+        self.assertNotIn("ID", inbox_stdout.getvalue())
 
 
 if __name__ == "__main__":

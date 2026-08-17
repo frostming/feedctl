@@ -84,14 +84,19 @@ def print_inbox_table(articles: tuple[UnreadArticle, ...]) -> None:
         header_style="bold cyan",
         expand=True,
     )
-    table.add_column("ID", justify="right", style="bold cyan", no_wrap=True)
+    table.add_column("Published (UTC)", width=16, no_wrap=True)
     table.add_column("Source", ratio=2)
     table.add_column("Title", ratio=3)
     table.add_column("Link", ratio=3)
 
     for article in articles:
+        published = (
+            Text(article.published_at[:16].replace("T", " "))
+            if article.published_at
+            else Text("—", style="dim")
+        )
         table.add_row(
-            str(article.article_id),
+            published,
             Text(article.source),
             Text(article.title),
             _link(article.link),
@@ -108,6 +113,7 @@ def print_inbox_json(articles: tuple[UnreadArticle, ...]) -> None:
                 "source": article.source,
                 "title": article.title,
                 "url": article.link,
+                "published_at": article.published_at,
             }
             for article in articles
         ],

@@ -23,3 +23,4 @@ class UnreadArticle:
     source: str
     title: str
     link: str
+    published_at: str | None

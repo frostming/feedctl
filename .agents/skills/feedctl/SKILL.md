@@ -51,13 +51,14 @@ Parse stdout as this schema:
       "id": 42,
       "source": "Example Feed",
       "title": "Example article",
-      "url": "https://example.com/article"
+      "url": "https://example.com/article",
+      "published_at": "2026-08-12T10:00:00+00:00"
     }
   ]
 }
 ```
 
-Treat `articles` as ordered from newest to oldest. Treat `id` as a stable local identifier for subsequent `read` commands. An empty inbox is still valid JSON:
+Treat `articles` as ordered from newest to oldest. `published_at` is a UTC ISO 8601 timestamp or `null` when the source provides no publication date. Treat `id` as a stable local identifier for subsequent `read` commands. An empty inbox is still valid JSON:
 
 ```json
 {"count": 0, "articles": []}
@@ -65,7 +66,7 @@ Treat `articles` as ordered from newest to oldest. Treat `id` as a stable local 
 
 The command refreshes feeds concurrently before returning cached unread articles. A failed source produces a warning on stderr but does not prevent other sources or cached articles from being returned. Do not reject a valid JSON result solely because stderr contains warnings.
 
-Use the default table only when preparing human-readable terminal output:
+Use the default table only when preparing human-readable terminal output. It shows the publication date, source, title, and link; it intentionally omits internal article IDs:
 
 ```console
 feedctl inbox

@@ -178,7 +178,11 @@ class Store:
     def list_unread(self) -> tuple[UnreadArticle, ...]:
         rows = self.db.execute(
             """
-            SELECT articles.id, feeds.title AS source, articles.title, articles.link
+            SELECT articles.id,
+                   feeds.title AS source,
+                   articles.title,
+                   articles.link,
+                   articles.published_at
             FROM articles
             JOIN feeds ON feeds.id = articles.feed_id
             WHERE articles.read_at IS NULL
@@ -192,6 +196,7 @@ class Store:
                 source=row["source"],
                 title=row["title"],
                 link=row["link"],
+                published_at=row["published_at"],
             )
             for row in rows
         )

@@ -43,6 +43,13 @@ class StoreTests(unittest.TestCase):
                 first_listing = store.list_unread()
                 self.assertEqual(store.list_unread(), first_listing)
                 self.assertEqual(len(first_listing), 2)
+                self.assertEqual(
+                    [article.published_at for article in first_listing],
+                    [
+                        "2026-08-13T09:00:00+00:00",
+                        "2026-08-13T08:00:00+00:00",
+                    ],
+                )
 
                 selected_id = first_listing[0].article_id
                 self.assertEqual(store.mark_read([selected_id, selected_id]), 1)
